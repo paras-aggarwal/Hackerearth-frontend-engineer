@@ -27,6 +27,8 @@ Data:
 
 ```sh
 git clone https://github.com/paras-aggarwal/Hackerearth-frontend-engineer
+```
+```sh
 cd Hackerearth-frontend-engineer
 ```
 
