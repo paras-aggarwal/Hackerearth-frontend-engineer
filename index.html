@@ -1,0 +1,281 @@
+<html>
+<head>
+	<title>HackerEarth's Shopping Cart</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+<style>
+.card-title {
+	margin-top: 15px;
+	color: #3d3d3d;
+}
+.card{
+	box-shadow: 2px 2px 2px #eee;
+	border-radius: 0;
+	border: 1;
+	margin-bottom: 7px;
+	display: inline-block;
+}
+.card:hover{
+	box-shadow: 3px 3px 3px #eee;
+	transition: 1s;
+}
+.close-button {
+	float: right;
+	cursor: pointer;
+	color: #a9a9a9;
+}
+font{
+	font-size: 25px;
+	font-weight: normal;
+}
+input[type=text] {
+	width: 55px;
+	height: 55px;
+	padding: 12px;
+}
+.qty-btn {
+	cursor: pointer;
+	color: #a9a9a9;
+}
+.cart {
+	width: 300px;
+	margin-top: 55px;
+	border: 1px solid #d3d3d3;
+	height: 150px;
+	line-height: 30px;
+	padding: 10px;
+	padding-left: 10px;
+}
+.align {
+	float: right;
+	padding-right: 10px;
+}
+.cart-foot {
+	background-color: #efefef;
+	padding: 9px;
+}
+.navbar {
+	height: 50px;
+	width: 100%;
+	background-color: #efefef;
+	margin-bottom: 25px;
+}
+.card {
+    	padding: 0;
+    }
+@media screen and (max-width: 768px) {
+    font {
+    	font-size: 18px;
+    }
+    input[type=text] {
+    	width: 40;
+    	height: 40;
+    	font-size: 12px;
+    	padding: 8px;
+    }
+    .qty-btn {
+    	font-size: 10px;
+    }
+    .img-fluid {
+    	width: 30;
+    }
+    #cart-items {
+    	font-size: 12px;
+    }
+    .card {
+    	padding: 0;
+    }
+    .alert-box {
+    	font-size: 12px;
+    }
+    .cart {
+    	font-size: 14px;
+    	margin-top: 10px;
+    	margin-bottom: 40px;
+    }
+}
+</style>
+</head>
+<body onload="setSize()" onresize="resize()">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <div class="navbar">
+    </div>
+    <div class="container">
+    	<div class="row no-gutters">
+    		<div id="orders" class="col-md-8">
+		    	<font><i class="fas fa-chevron-left"></i> &nbsp; Order Summary</font>
+		    	<hr>
+		    	<div id="alert-box"></div>
+		    	<div class=".table-responsive">
+		    		<table>
+		    			<p id="cart-items"></p> 
+					</table>
+				</div>
+			</div>
+			<div id="cart" class="col-md-4 cart">
+				<p id="total-price"></p>
+			</div>
+		</div>
+    </div>
+
+<script>
+var items, i, total = 0, count = 0, discount = 0, amount = 0, baseDiscount = 0, typeDiscount = 0, actualAmount = 0, tDiscount = 0;
+items = {
+    Data: 
+    [ 
+	    { "id": 9090, "name": "Item1", "price": 200, "discount": 10, "type": "fiction", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9091, "name": "Item2", "price": 250, "discount": 15, "type": "literature", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9092, "name": "Item3", "price": 320, "discount": 5, "type": "literature", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9093, "name": "Item4", "price": 290, "discount": 0, "type": "thriller", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9094, "name": "Item5", "price": 500, "discount": 25, "type": "thriller", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9095, "name": "Item6", "price": 150, "discount": 5, "type": "literature", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9096, "name": "Item7", "price": 700, "discount": 22, "type": "literature", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 },
+	    { "id": 9097, "name": "Item8", "price": 350, "discount": 18, "type": "fiction", "img_url": "https://store.lexisnexis.com.au/__data/media/catalog/thumb//placeholder.jpg", "qty": 1 }
+	]
+}
+
+function setSize() {
+	var orders = document.getElementById('orders');
+	var cart = document.getElementById('cart');
+	var width = screen.width;
+	if(width < 768) {
+		orders.setAttribute('class', 'col-md-8 order-2')
+		cart.setAttribute('class', 'col-md-4 cart order-1')
+	}
+	else if(width > 768) {
+		orders.setAttribute('class', 'col-md-8 order-1')
+		cart.setAttribute('class', 'col-md-4 cart order-2')
+	}
+}
+
+function resize() { 
+	var orders = document.getElementById('orders');
+	var cart = document.getElementById('cart');
+	var width = screen.width;
+	
+	if(width < 768) {
+		orders.setAttribute('class', 'col-md-8 order-2')
+		cart.setAttribute('class', 'col-md-4 cart order-1')
+	}
+	else if(width > 768) {
+		orders.setAttribute('class', 'col-md-8 order-1')
+		cart.setAttribute('class', 'col-md-4 cart order-2')
+	}
+}
+
+function deleteItem(i) {
+	delete items.Data[i];
+	document.getElementById("cart-items").innerHTML = "";
+	document.getElementById("total-price").innerHTML = "";
+	total = 0;
+	count = 0;
+	tDiscount=0;
+	baseDiscount=0;
+	for (i in items.Data) {
+	total += items.Data[i].price;
+	discount = items.Data[i].discount;
+	baseDiscount += items.Data[i].price / 100 * discount;
+	if(items.Data[i].type = "fiction") {
+		discount = 15;
+	typeDiscount = items.Data[i].price / 100 * discount;
+	tDiscount += typeDiscount;
+	}
+	count += 1;
+    document.getElementById("cart-items").innerHTML += "<tr><td><div class='card col-5'><div class='row no-gutters'><div class='col-auto'><img src="+items.Data[i].img_url+" class='img-fluid' width='40'></div><div class='col'><div class='card-block px-2'><p class='card-title'>"+items.Data[i].name+" <span class='close-button' onclick='deleteItem("+i+")'>&times;</span></p></div></div></td>";
+    
+    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; <td><span class='qty-btn' onclick='reduce("+items.Data[i].id+")'><i class='fas fa-minus'></i></span> <input type='text' id='item-qty' value="+items.Data[i].qty+" disabled> <span class='qty-btn' onclick='increase("+items.Data[i].id+")'><i class='fas fa-plus'></i></span></td>" ;
+    
+    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; <td>$"+items.Data[i].price+"</td></tr>";
+}
+amount = total - baseDiscount - tDiscount;
+document.getElementById("total-price").innerHTML += "Items("+count+") : <span class='align'>$"+total+"</span><br>discount : <span class='align'>- $"+baseDiscount+"</span><br>Type discount : <span class='align'>- $"+tDiscount+"</span><br><div class='cart-foot'>Order total : <span class='align'>$"+amount+"</span></div>";
+
+document.getElementById("alert-box").innerHTML = '<div class="alert alert-info alert-dismissible fade show" role="alert">Item removed from cart!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+}
+
+function reduce(id) {
+	var ide=id-9090;
+	console.log(total);
+	if(items.Data[ide].qty!=1) {	
+		items.Data[ide].qty -= 1;
+		total -= items.Data[ide].price;
+		count -= 1;
+		discount = items.Data[ide].discount;
+		baseDiscount -= items.Data[ide].price / 100 * discount;
+	
+		if(items.Data[ide].type == "fiction") {
+			discount = 15;
+			typeDiscount = items.Data[ide].price / 100 * discount;
+			tDiscount -= typeDiscount;
+			console.log("yes");
+		}
+	}
+	document.getElementById("cart-items").innerHTML="";
+	for (i in items.Data) {
+		document.getElementById("cart-items").innerHTML += "<div class='card col-5'><div class='row no-gutters'><div class='col-auto'><img src="+items.Data[i].img_url+" class='img-fluid' width='40'></div><div class='col'><div class='card-block px-2'><p class='card-title'>"+items.Data[i].name+" <span class='close-button' onclick='deleteItem("+i+")'>&times;</span></p></div></div>";
+	
+		document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; <span class='qty-btn' onclick='reduce("+items.Data[i].id+")'><i class='fas fa-minus'></i></span> <input type='text' id='item-qty' value="+items.Data[i].qty+" disabled> <span class='qty-btn' onclick='increase("+items.Data[i].id+")'><i class='fas fa-plus'></i></span>" ;
+	    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; $"+items.Data[i].price;
+	}
+
+	document.getElementById("total-price").innerHTML = "";
+	amount = total - baseDiscount - tDiscount;
+	document.getElementById("total-price").innerHTML += "Items("+count+") : <span class='align'>$"+total+"</span><br>discount : <span class='align'>- $"+baseDiscount+"</span><br>Type discount : <span class='align'>- $"+tDiscount+"</span><br><div class='cart-foot'>Order total : <span class='align'>$"+amount+"</span></div>";
+}
+
+function increase(id) {
+	count += 1;
+	var ide=id-9090;
+	console.log("ide: "+ide+"id: "+items.Data[ide].id+" name: "+items.Data[ide].name+" type: "+items.Data[ide].type);
+	items.Data[ide].qty += 1;
+    document.getElementById("cart-items").innerHTML="";
+    total += items.Data[ide].price;
+	discount = items.Data[ide].discount;
+	baseDiscount += items.Data[ide].price / 100 * discount;
+	
+	if(items.Data[ide].type == "fiction") {
+		discount = 15;
+		typeDiscount = items.Data[ide].price / 100 * discount;
+		tDiscount += typeDiscount;
+	}
+	for (i in items.Data) {
+	    document.getElementById("cart-items").innerHTML += "<div class='card col-5'><div class='row no-gutters'><div class='col-auto'><img src="+items.Data[i].img_url+" class='img-fluid' width='40'></div><div class='col'><div class='card-block px-2'><p class='card-title'>"+items.Data[i].name+" <span class='close-button' onclick='deleteItem("+i+")'>&times;</span></p></div></div>";
+	    
+	    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; <span class='qty-btn' onclick='reduce("+items.Data[i].id+")'><i class='fas fa-minus'></i></span> <input type='text' id='item-qty' value="+items.Data[i].qty+" disabled> <span class='qty-btn' onclick='increase("+items.Data[i].id+")'><i class='fas fa-plus'></i></span> ";
+	    
+	    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; $"+items.Data[i].price;
+	}
+	document.getElementById("total-price").innerHTML = "";
+	amount = total - baseDiscount - tDiscount;
+	document.getElementById("total-price").innerHTML += "Items("+count+") : <span class='align'>$"+total+"</span><br>discount : <span class='align'>- $"+baseDiscount+"</span><br>Type discount : <span class='align'>- $"+tDiscount+"</span><br><div class='cart-foot'>Order total : <span class='align'>$"+amount+"</span></div>"; 
+}
+
+for (i in items.Data) {
+	total += items.Data[i].price;
+	discount = items.Data[i].discount;
+	baseDiscount += items.Data[i].price / 100 * discount;
+	if(items.Data[i].type == "fiction") {
+		discount = 15;
+		typeDiscount = items.Data[i].price / 100 * discount;
+		tDiscount += typeDiscount;
+	}
+	count += 1;
+    document.getElementById("cart-items").innerHTML += "<div class='card col-5'><div class='row no-gutters'><div class='col-auto'><img src="+items.Data[i].img_url+" class='img-fluid' width='40'></div><div class='col'><div class='card-block px-2'><p class='card-title'>"+items.Data[i].name+" <span class='close-button' onclick='deleteItem("+i+")'>&times;</span></p></div></div>";
+    
+    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; <span class='qty-btn' onclick='reduce("+items.Data[i].id+")'><i class='fas fa-minus'></i></span> <input type='text' id='item-qty' value="+items.Data[i].qty+" disabled> <span class='qty-btn' onclick='increase("+items.Data[i].id+")'><i class='fas fa-plus'></i></span>" ;
+    
+    document.getElementById("cart-items").innerHTML += " &nbsp; &nbsp; &nbsp; $"+items.Data[i].price;
+}
+amount = total - baseDiscount - tDiscount;
+document.getElementById("total-price").innerHTML += "Items("+count+") : <span class='align'>$"+total+"</span><br>discount : <span class='align'>- $"+baseDiscount+"</span><br>Type discount : <span class='align'>- $"+tDiscount+"</span><br><div class='cart-foot'>Order total : <span class='align'>$"+amount+"</span></div>";
+
+// window.onload = setSize;
+// window.onresize = resize;
+</script>
+
+</body>
+</html>
